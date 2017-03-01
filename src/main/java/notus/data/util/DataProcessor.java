@@ -28,7 +28,7 @@ public class DataProcessor{
         }
 
         //  读取当前遍历到的文件
-        BufferedReader reader = new BufferedReader(new FileReader(this.files[index]));
+        BufferedReader reader = new BufferedReader(new FileReader(this.files[index++]));
         //  读取文件头信息
         String line1 = reader.readLine();
         String[] l1splits = line1.split(" ");
