@@ -13,6 +13,7 @@ import org.deeplearning4j.optimize.listeners.ScoreIterationListener;
 import org.nd4j.linalg.activations.Activation;
 import org.nd4j.linalg.dataset.DataSet;
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
+import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,8 +71,10 @@ public class Example {
         System.out.println(model.params().shapeInfoToString());
 //        BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream("result"));
 //        model.params().data().write(out);
-        System.out.println(model.params().data().dataType());
-        System.out.println(model.params().getColumns(1,2,3).toString());
+//        System.out.println(model.params().data().dataType());
+//        System.out.println(model.params().getColumns(1,2,3).toString());
+
+        Nd4j.write(model.params(), new DataOutputStream(new FileOutputStream("result")));
 
 //        System.out.println(model.params().equals());
 
