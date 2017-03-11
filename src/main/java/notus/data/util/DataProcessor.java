@@ -109,10 +109,9 @@ public class DataProcessor implements Iterable<INDArray>{
     }
 
     public static void main(String[] args) throws URISyntaxException, IOException {
-//        DataProcessor dataProcessor = new DataProcessor();
-//        for (INDArray data:dataProcessor) {
-//            System.out.println(data);
-//        }
-        System.out.println(~0010101);
+        DataProcessor dataProcessor = new DataProcessor();
+        for (INDArray data:dataProcessor) {
+            System.out.println(data);
+        }
     }
 }
