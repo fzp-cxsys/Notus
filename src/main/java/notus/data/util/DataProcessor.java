@@ -90,7 +90,7 @@ public class DataProcessor implements Iterable<INDArray>{
         return new Iterator<INDArray>() {
             @Override
             public boolean hasNext() {
-                if (files != null && index < files.length){
+                if (files != null && index < files.length - 1){
                     return true;
                 } else {
                     return false;
