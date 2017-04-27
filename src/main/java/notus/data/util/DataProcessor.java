@@ -34,7 +34,9 @@ public class DataProcessor implements Iterable<INDArray>{
             int k = 0;
             for (int j = 0; j < split.length; j++) {
                 if (j == rainfallIndex){
-                    vector[vector.length - 1] = Double.parseDouble(split[j]);
+                    double rainfall = Double.parseDouble(split[j]);
+//                    if(rainfall >= 30000) continue;
+                    vector[vector.length - 1] = rainfall;
                 } else if (j == year) {
                     vector[vector.length - 4] = Double.parseDouble(split[j]);
                 } else if (j == month) {

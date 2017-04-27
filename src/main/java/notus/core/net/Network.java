@@ -38,7 +38,7 @@ public class Network {
 
     public static void main(String[] args) throws IOException, URISyntaxException {
         int seed = 123;
-        int iterations = 1;
+        int iterations = 5;
         int listenerFreq = iterations/5;
 
 
@@ -61,19 +61,27 @@ public class Network {
                 .iterations(iterations)
                 .activation(Activation.RELU)
                 .weightInit(WeightInit.XAVIER)
-                .learningRate(0.0015) //specify the learning rate
+                .learningRate(0.01) //specify the learning rate
                 .updater(Updater.NESTEROVS).momentum(0.98) //specify the rate of change of the learning rate.
                 .regularization(true).l2(0.0015 * 0.005) // regularize learning model
                 .list()
                 .layer(0, new DenseLayer.Builder() //create the first input layer.
                         .nIn(17)
-                        .nOut(14)
+                        .nOut(30)
                         .build())
                 .layer(1, new DenseLayer.Builder() //create the second input layer
-                        .nIn(14)
+                        .nIn(30)
+                        .nOut(20)
+                        .build())
+                .layer(2, new DenseLayer.Builder() //create the second input layer
+                        .nIn(20)
                         .nOut(10)
                         .build())
-                .layer(2, new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD) //create hidden layer
+//                .layer(3, new DenseLayer.Builder() //create the second input layer
+//                        .nIn(10)
+//                        .nOut(10)
+//                        .build())
+                .layer(3, new OutputLayer.Builder(LossFunctions.LossFunction.MSE) //create hidden layer
                         .activation(Activation.SOFTMAX)
                         .nIn(10)
                         .nOut(8)
@@ -87,11 +95,14 @@ public class Network {
 
         model.setListeners(new ScoreIterationListener(listenerFreq));
 
+//      正则化数据
+        DataNormalization normalizer = new NormalizerStandardize();
+
         log.info("Train model....");
         DataProcessor dataProcessor = new DataProcessor();
         INDArray testData = dataProcessor.nextData();
+
         for (INDArray data : dataProcessor) {
-            data = dataProcessor.nextData();
             INDArray orinLabels = data.getColumns(21);
             INDArray labels = Nd4j.zeros(data.rows(), 8);
 
@@ -125,21 +136,26 @@ public class Network {
             DataSet dataSet = new DataSet(data.getColumns(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17), labels);
 
 
-            List<String> labelNames = Arrays.asList("微雨", "小雨", "中雨" , "大雨", "暴雨", "大暴雨", "特大暴雨");
+            List<String> labelNames = Arrays.asList("晴", "微雨", "小雨", "中雨" , "大雨", "暴雨", "大暴雨", "特大暴雨");
 
             dataSet.setLabelNames(labelNames);
 
-            DataNormalization normalizer = new NormalizerStandardize();
             normalizer.fit(dataSet);
             normalizer.transform(dataSet);
 
 //            System.out.println(dataSet.getLabels());
             model.fit(dataSet);
 
+            DataSet testDataSet = new DataSet(testData.getColumns(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17), labels);
+            testDataSet.setLabelNames(labelNames);
+            normalizer.transform(testDataSet);
+//            System.out.println(model.output(dataSet.getFeatures()));
+            System.out.println(model.predict(dataSet));
+//            System.out.println(dataSet.getLabels());
+
         }
-//        System.out.println(model.predict(dataSet));
-        System.out.println(Arrays.toString(model.predict(testData.getColumns(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17))));
-        System.out.println(model.output(testData.getColumns(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17)));
+//        System.out.println(Arrays.toString(model.predict(testData.getColumns(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17))));
+//        System.out.println(model.output(testData.getColumns(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17)));
 
     }
 }
